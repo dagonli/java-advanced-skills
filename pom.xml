@@ -13,6 +13,7 @@
     <modules>
         <module>apache-dbcp-demo</module>
         <module>jdk_threadPool_demo</module>
+        <module>java_transaction_demo</module>
     </modules>
 
     <properties>
