@@ -1,8 +1,12 @@
-package com.diy.dagon.proxy.service;
+package com.diy.dagon.proxy.service.statics;
+
+import com.diy.dagon.proxy.service.AdminService;
+
+import java.util.List;
 
 /**
  * @author dagon
- * @description: TODO
+ * @description: 代理类
  * @date 2021/3/18-8:51
  */
 public class AdminServiceProxy implements AdminService {
@@ -25,5 +29,10 @@ public class AdminServiceProxy implements AdminService {
         System.out.println("判断用户是否有权限进行update操作");
         adminService.update();
         System.out.println("记录用户执行update操作的用户信息、更改内容和时间等");
+    }
+
+    @Override
+    public String testArgs(int count, List<String> strList) {
+        return null;
     }
 }
