@@ -37,7 +37,7 @@ public class JDBCDemo {
         //DriverManager.registerDriver(new Driver());
 
         //2、创建数据库的连接
-        String url = "jdbc:mysql://192.168.1.103:3306/cloud_note";
+        String url = "jdbc:mysql://192.168.1.102:3306/cloud_note";
         String username = "root";
         String password="liyu5200";
         Connection connection = null;

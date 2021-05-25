@@ -3,6 +3,7 @@ package com.diy.dagon.spring;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,12 +27,25 @@ public class SpringTxUnitTest {
 
     @Resource
     UserService userService;
+    @Resource
+    JdbcTemplate jdbcTemplate;
+
+    @Test
+    public void testTx() {
+        userService.register("iii");
+    }
 
     @Test
     public void test() {
         System.out.println("login");
         userService.register("sofia");
         userService.register("dagon");
+        System.err.println("over");
+    }
+
+    @Test
+    public void testJdbcTemplate() {
+        jdbcTemplate.execute("update cloud_test set name='sofia' where id=2;");
         System.err.println("over");
     }
 }

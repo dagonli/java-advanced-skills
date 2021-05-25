@@ -1,7 +1,10 @@
 package com.diy.dagon.spring;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 /**
  * @author dagon
@@ -11,13 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Resource
+    JdbcTemplate jdbcTemplate;
+    @Resource
+    CloudNoteTestService cloudNoteTestService;
+
     @Override
     @Transactional
     public boolean register(String userName) {
-        if ("dagon".equals(userName)) {
-            throw new IllegalArgumentException("错误了");
+        jdbcTemplate.execute("update cn_user set cn_user_name ='" + userName + "' where cn_user_id = '008' ");
+        try {
+            cloudNoteTestService.update("ddd");
+        } catch (Exception e) {
+            System.err.println("update error.");
         }
-        System.err.println("执行成功");
+
+        System.err.println("run success!");
         return true;
     }
 
