@@ -28,7 +28,7 @@ public class CloudNoteTestServiceImpl1 implements CloudNoteTestService1{
         } catch (Exception e) {
 //            throw new RuntimeException("insert error.");
 //            System.err.println("run with a error.");
-            throw new SQLException("insert error.");
+            throw new RuntimeException("insert error.");
         }
         jdbcTemplate.execute("update cn_test set name ='" + name + "' where id='1';");
         return false;

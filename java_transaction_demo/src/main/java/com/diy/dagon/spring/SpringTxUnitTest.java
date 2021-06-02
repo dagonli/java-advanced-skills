@@ -29,10 +29,17 @@ public class SpringTxUnitTest {
     UserService userService;
     @Resource
     JdbcTemplate jdbcTemplate;
+    @Resource
+    CloudNoteTestService cloudNoteTestService;
+
+    @Test
+    public void testRollback() {
+        cloudNoteTestService.insert(1, "liyu");
+    }
 
     @Test
     public void testTx() {
-        userService.register("iii");
+        userService.register("yyy");
     }
 
     @Test

@@ -56,7 +56,7 @@ public class ApplicationContext {
     public DataSource createDataSource(){
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://192.168.1.101:3306/cloud_note");
+        ds.setUrl("jdbc:mysql://192.168.1.102:3306/cloud_note");
         ds.setUsername("root");
         ds.setPassword("liyu5200");
         return ds;

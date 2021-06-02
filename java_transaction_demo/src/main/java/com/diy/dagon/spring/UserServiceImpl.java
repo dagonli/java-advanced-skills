@@ -2,6 +2,7 @@ package com.diy.dagon.spring;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -20,11 +21,11 @@ public class UserServiceImpl implements UserService {
     CloudNoteTestService cloudNoteTestService;
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.NESTED)
     public boolean register(String userName) {
         jdbcTemplate.execute("update cn_user set cn_user_name ='" + userName + "' where cn_user_id = '008' ");
         try {
-            cloudNoteTestService.update("ddd");
+            cloudNoteTestService.insert(1,"ddd");
         } catch (Exception e) {
             System.err.println("update error.");
         }
