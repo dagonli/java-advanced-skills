@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     CloudNoteTestService cloudNoteTestService;
 
     @Override
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional
     public boolean register(String userName) {
         jdbcTemplate.execute("update cn_user set cn_user_name ='" + userName + "' where cn_user_id = '008' ");
         try {
@@ -35,7 +35,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public User login(String userName) {
+        jdbcTemplate.execute("update cn_user set cn_user_name ='" + userName + "' where cn_user_id = '008' ");
+        cloudNoteTestService.insert(1, null);
+                if (1==1)
+        throw new RuntimeException();
         return null;
     }
 }

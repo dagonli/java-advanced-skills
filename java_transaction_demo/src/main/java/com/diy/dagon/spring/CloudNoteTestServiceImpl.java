@@ -35,11 +35,24 @@ public class CloudNoteTestServiceImpl implements CloudNoteTestService{
     }
 
     @Override
-    @Transactional(propagation = Propagation.NESTED)
+    @Transactional(propagation = Propagation.SUPPORTS)
     public boolean insert(int id, String name) {
-        jdbcTemplate.execute("insert into cn_test values (1,'axe');");
-        if (1==1)
-        throw new RuntimeException();
+
+        System.out.println("重试异常。。。");
+
+        try {
+
+            this.executeInsertException();
+        } catch (Exception e) {
+            System.err.println("捕获到了异常信息，{}" + e);
+        }
+//        jdbcTemplate.execute("insert into cn_test values (5,'axe');");
+//        if (1==1)
+//        throw new RuntimeException();
         return true;
+    }
+
+    private void executeInsertException() {
+        jdbcTemplate.execute("insert into cn_test values (5,'axe');");
     }
 }

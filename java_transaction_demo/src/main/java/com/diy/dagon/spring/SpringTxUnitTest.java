@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.PatternMatchUtils;
 
 import javax.annotation.Resource;
+import java.lang.reflect.Method;
 
 /**
  * @author dagon
@@ -39,7 +41,12 @@ public class SpringTxUnitTest {
 
     @Test
     public void testTx() {
-        userService.register("yyy");
+        userService.register("yyds1");
+    }
+
+    @Test
+    public void testNewTx() {
+        userService.login("never_more");
     }
 
     @Test
@@ -55,4 +62,16 @@ public class SpringTxUnitTest {
         jdbcTemplate.execute("update cloud_test set name='sofia' where id=2;");
         System.err.println("over");
     }
+
+    @Test
+    public void testMethodMatched() throws NoSuchMethodException {
+        Class<? extends UserService> aClass = userService.getClass();
+        Method method = aClass.getMethod("register", String.class);
+        String methodName = method.getName();
+
+        String mappedName = "*NewTrx";
+        boolean b = PatternMatchUtils.simpleMatch(mappedName, "saveLoanSuccBillIncomeNew");
+        System.out.println(b);
+    }
+
 }
