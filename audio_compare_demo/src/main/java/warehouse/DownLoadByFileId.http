@@ -1,0 +1,13 @@
+### GET request to example server
+POST https://pre-focuspro-mca.360shuke.com/btl-web/gateway/file/url/get \
+-H 'Content-Type: application/json' \
+-d '{
+    "fileId": "GFSXd2711d1242084330b72e834fa1436d04",
+    "fileType": "PIC"
+  }'
+### POST request to example server
+POST https://pre-focuspro-mca.360shuke.com/btl-web/gateway/file/url/get
+
+### GET request to example server
+GET https://xdpro-focuspro-mca.360shuke.com//btl-web/gateway/file/url/get?fileType=wav&fileId=S32c1da516ac0946e295fcab20acc23050
+
