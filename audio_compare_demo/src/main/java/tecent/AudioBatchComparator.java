@@ -1,7 +1,8 @@
 package tecent;
 
 
-import com.alibaba.fastjson2.JSONObject;
+
+import com.alibaba.fastjson.JSONObject;
 import com.tencentcloudapi.common.CommonClient;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.exception.TencentCloudSDKException;
@@ -163,7 +164,7 @@ public class AudioBatchComparator {
         map2.put("SampleRate", 16000);
         map2.put("VoiceFormat", 1);
         map2.put("VoicePrintId", voicePrintId1);
-        String resp2 = client.call("VoicePrintVerify", com.alibaba.fastjson2.JSONObject.toJSONString(map2));
+        String resp2 = client.call("VoicePrintVerify", com.alibaba.fastjson.JSONObject.toJSONString(map2));
         System.err.println("对比成功，服务返回："+resp2);
 
 
