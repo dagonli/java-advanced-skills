@@ -27,7 +27,7 @@ public class Sample
             // 请参见：https://cloud.tencent.com/document/product/1278/85305
             // 密钥可前往官网控制台 https://console.cloud.tencent.com/cam/capi 进行获取
             //Credential cred = new Credential(System.getenv("TENCENTCLOUD_SECRET_ID"), System.getenv("TENCENTCLOUD_SECRET_KEY"));
-            Credential cred = new Credential("AKIDU5WklbFguwlNlw0tY0LThRyHNFuLZZLu","PaXGn7NRHuKWVGoESTGqaAXgd0DF4f4F");
+            Credential cred = new Credential("","");
 
 
 

@@ -22,7 +22,7 @@ public class AudioBatchComparator {
 
 
     public static void main(String[] args) throws IOException {
-        Credential cred = new Credential("AKIDU5Wklw0tY0LThRyHNFuLZZLu","PaXGn7NRHuKWVGoESTd0DF4f4F");
+        Credential cred = new Credential("","");
 
 
 
