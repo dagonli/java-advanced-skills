@@ -16,6 +16,7 @@
         <module>java_transaction_demo</module>
         <module>smart_tools_demo</module>
         <module>audio_compare_demo</module>
+        <module>java_basic_demo</module>
     </modules>
 
     <properties>
@@ -28,19 +29,6 @@
             <artifactId>junit</artifactId>
             <version>${junit-version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.alibaba.fastjson2</groupId>
-            <artifactId>fastjson2</artifactId>
-            <version>2.0.38</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.15.3</version>
-        </dependency>
-
-
-
     </dependencies>
 
 

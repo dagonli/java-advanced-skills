@@ -5,6 +5,8 @@ import java.util.concurrent.*;
 /**
  * Hello world!
  *
+ * 参考博客 {@see https://www.jianshu.com/p/a166944f1e73}
+ *
  */
 public class App implements Runnable
 {
@@ -12,7 +14,7 @@ public class App implements Runnable
         //1.jdk自带是无界队列
 //        ExecutorService executorService = Executors.newFixedThreadPool(3);
         ExecutorService executorService = new ThreadPoolExecutor(3, 5,
-                0L, TimeUnit.MILLISECONDS,
+                2000L, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(5));
 
         for (int i = 0; i < 20; i++) {
