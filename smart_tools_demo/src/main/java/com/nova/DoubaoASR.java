@@ -22,8 +22,8 @@ public class DoubaoASR {
     static final String SUBMIT_URL = "https://openspeech.bytedance.com/api/v1/vc/submit?appid=%s&language=%s&caption_type=speech&use_itn=True&use_capitalize=True&max_lines=1&words_per_line=15&with_speaker_info=True";
     static final String QUERY_URL = "https://openspeech.bytedance.com/api/v1/vc/query?appid=%s&id=%s";
     static final String LANGUAGE = "zh-CN";
-    static final String APPID = "4349306823";
-    static final String TOKEN = "-y8u7PljiVts-kOn47Pg_8czZGt4yoLs";
+    static final String APPID = "XXXXXX";
+    static final String TOKEN = "XXXXXXXX";
 
     public static void main(String[] args) throws Exception {
 
