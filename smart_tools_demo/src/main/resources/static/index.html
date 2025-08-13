@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>语音识别上传</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    .card { max-width: 520px; padding: 24px; border: 1px solid #e5e5e5; border-radius: 8px; }
+    .row { margin-bottom: 16px; }
+    button { padding: 8px 16px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>上传 WAV 文件并识别</h2>
+    <form id="form" method="post" action="/asr/upload" enctype="multipart/form-data">
+      <div class="row">
+        <input type="file" name="file" accept="audio/wav" required />
+      </div>
+      <div class="row">
+        <button type="submit">上传并识别</button>
+      </div>
+    </form>
+    <p>提交后，浏览器会自动下载识别结果的 txt 文件。</p>
+  </div>
+</body>
+</html>

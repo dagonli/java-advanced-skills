@@ -28,7 +28,7 @@ public class DoubaoASR {
     public static void main(String[] args) throws Exception {
 
         //换成本地需要解析的音频
-        File file = new File("smart_tools_demo\\src\\resources\\conversation_1.wav");
+        File file = new File("C:\\Users\\liyu-jk\\Desktop\\线下AI获客助手\\第二期\\对话（客户经理二）.wav");
 
         String job_id = submitNew(file);
         query(job_id);

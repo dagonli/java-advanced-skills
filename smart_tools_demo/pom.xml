@@ -78,7 +78,12 @@
       <version>2.12.4.1</version>
     </dependency>
 
-
+    <!-- Add Spring Boot Web for HTTP service and file upload -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+      <version>2.1.4.RELEASE</version>
+    </dependency>
 
   </dependencies>
 
