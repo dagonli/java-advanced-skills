@@ -3,6 +3,7 @@ package com.upcredit.utils;
 
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -17,7 +18,7 @@ import java.util.Map;
  * @Date 2025/3/31 22:50
  * @Author by liyu-jk
  */
-public class UpCreditRSAUtils {
+public class QfinCryptoUtil {
     /**
      * encryption algorithm RSA
      */
@@ -82,11 +83,11 @@ public class UpCreditRSAUtils {
 
             System.out.println("--------------------");
 
-            byte[] reqBytes2 = UpCreditRSAUtils.encryptByPrivateKey(reqData.getBytes(), privateKey_1);
+            byte[] reqBytes2 = QfinCryptoUtil.encryptByPublicKey(reqData.getBytes(), publicKey_2);
             String reqEncode = Base64.getEncoder().encodeToString(reqBytes2);
             System.out.println("Data encrypted with a private key：" + reqEncode);
 
-            String singnData2 = UpCreditRSAUtils.sign(reqData.getBytes(), privateKey_1);
+            String singnData2 = QfinCryptoUtil.sign(reqData.getBytes(), privateKey_1);
             System.out.println("Data signed with a private key：" + singnData2);
 
             // requested parameters
@@ -99,20 +100,20 @@ public class UpCreditRSAUtils {
             reqMap.put("sign", singnData2);
 
 
-            byte[] reqDecryptBytes2 = UpCreditRSAUtils.decryptByPublicKey(Base64.getDecoder().decode(reqMap.get("bizContent")), publicKey_1);
-            System.out.println("Data decrypted by public key：" + new String(reqDecryptBytes2));
+            byte[] reqDecryptBytes2 = QfinCryptoUtil.decryptByPrivateKey(Base64.getDecoder().decode(reqMap.get("bizContent")), privateKey_2);
+            System.out.println("Data decrypted by public key：" + new String(reqDecryptBytes2, StandardCharsets.UTF_8));
 
-            boolean isSign2 = UpCreditRSAUtils.verify(reqDecryptBytes2, publicKey_1, reqMap.get("sign"));
+            boolean isSign2 = QfinCryptoUtil.verify(reqDecryptBytes2, publicKey_1, reqMap.get("sign"));
             System.out.println("Verify that the signature is correct：" + isSign2);
 
 
             // response
             String repData = "{\"code\":null, \"msg\":null, \"flag\":\"S\", \"data\":{\"a\":\"1\"}}";
-            byte[] repBytes2 = UpCreditRSAUtils.encryptByPrivateKey(repData.getBytes(), privateKey_2);
+            byte[] repBytes2 = QfinCryptoUtil.encryptByPublicKey(repData.getBytes(StandardCharsets.UTF_8), publicKey_1);
             String repEncode = Base64.getEncoder().encodeToString(repBytes2);
             System.out.println("Data encrypted with a private key：" + repEncode);
 
-            String repSingnData2 = UpCreditRSAUtils.sign(repData.getBytes(), privateKey_2);
+            String repSingnData2 = QfinCryptoUtil.sign(repData.getBytes(StandardCharsets.UTF_8), privateKey_2);
             System.out.println("Data signed with a private key：" + singnData2);
 
             // response parameters
@@ -123,10 +124,10 @@ public class UpCreditRSAUtils {
             repMap.put("data", repEncode);
             repMap.put("sign", repSingnData2);
 
-            byte[] repDecryptBytes2 = UpCreditRSAUtils.decryptByPublicKey(Base64.getDecoder().decode(repMap.get("data")), publicKey_2);
-            System.out.println("Data decrypted by public key：" + new String(repDecryptBytes2));
+            byte[] repDecryptBytes2 = QfinCryptoUtil.decryptByPrivateKey(Base64.getDecoder().decode(repMap.get("data")), privateKey_1);
+            System.out.println("Data decrypted by public key：" + new String(repDecryptBytes2, StandardCharsets.UTF_8));
 
-            boolean isSign3 = UpCreditRSAUtils.verify(repDecryptBytes2, publicKey_2, repMap.get("sign"));
+            boolean isSign3 = QfinCryptoUtil.verify(repDecryptBytes2, publicKey_2, repMap.get("sign"));
             System.out.println("Verify that the signature is correct：" + isSign3);
 
 

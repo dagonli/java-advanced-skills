@@ -22,13 +22,13 @@ public class DoubaoASR {
     static final String SUBMIT_URL = "https://openspeech.bytedance.com/api/v1/vc/submit?appid=%s&language=%s&caption_type=speech&use_itn=True&use_capitalize=True&max_lines=1&words_per_line=15&with_speaker_info=True";
     static final String QUERY_URL = "https://openspeech.bytedance.com/api/v1/vc/query?appid=%s&id=%s";
     static final String LANGUAGE = "zh-CN";
-    static final String APPID = "XXXXXX";
-    static final String TOKEN = "XXXXXXXX";
+    static final String APPID = "4349306823";
+    static final String TOKEN = "-y8u7PljiVts-kOn47Pg_8czZGt4yoLs";
 
     public static void main(String[] args) throws Exception {
 
         //换成本地需要解析的音频
-        File file = new File("C:\\Users\\liyu-jk\\Desktop\\线下AI获客助手\\第二期\\对话（客户经理二）.wav");
+        File file = new File("C:\\Users\\liyu-jk\\Desktop\\线下AI获客助手\\第三期\\对话（客户经理二）.wav");
 
         String job_id = submitNew(file);
         query(job_id);

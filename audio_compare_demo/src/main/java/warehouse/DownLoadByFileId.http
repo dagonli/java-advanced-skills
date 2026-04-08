@@ -11,3 +11,7 @@ POST https://pre-focuspro-mca.360shuke.com/btl-web/gateway/file/url/get
 ### GET request to example server
 GET https://xdpro-focuspro-mca.360shuke.com//btl-web/gateway/file/url/get?fileType=wav&fileId=S32c1da516ac0946e295fcab20acc23050
 
+
+
+### GET request to example server
+GET https://restapi.amap.com/v3/geocode/regeo?key=a4997598e8fd62b3eb5089bba58b216f&location=31.2211,121.5294&radius=1000&extensions=all
