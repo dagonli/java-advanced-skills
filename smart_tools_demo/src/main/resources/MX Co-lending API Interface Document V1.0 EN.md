@@ -1,8 +1,7 @@
-# MX Co-lending API Interface Document V1.0
 
-## 1. Overview
+# 1. Overview
 
-### 1.1 Interface Description
+## 1.1 Interface Description
 
 All interfaces defined in this specification are transmitted over HTTPS with JSON as the data format. The HTTP method is uniformly **POST** for all endpoints.
 
@@ -13,9 +12,9 @@ All interfaces defined in this specification are transmitted over HTTPS with JSO
 
 ---
 
-## 2. Security Mechanism
+# 2. Security Mechanism
 
-### 2.1 Dual-Layer Protection
+## 2.1 Dual-Layer Protection
 
 To ensure data security, a **Encryption + Digital Signature** dual-layer protection scheme is adopted:
 
@@ -24,7 +23,7 @@ To ensure data security, a **Encryption + Digital Signature** dual-layer protect
 | **Encryption** | Protects data confidentiality and prevents data leakage |
 | **Digital Signature** | Ensures data integrity, prevents tampering, and authenticates the message origin |
 
-### 2.2 Layered Security Architecture
+## 2.2 Layered Security Architecture
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -41,9 +40,9 @@ To ensure data security, a **Encryption + Digital Signature** dual-layer protect
 
 ---
 
-## 3. Cryptographic Algorithm Specification
+# 3. Cryptographic Algorithm Specification
 
-### 3.1 Algorithm Suite
+## 3.1 Algorithm Suite
 
 The following algorithm combination is adopted: **RSA-2048 + AES-256-GCM + SHA256withRSA**
 
@@ -55,15 +54,15 @@ The following algorithm combination is adopted: **RSA-2048 + AES-256-GCM + SHA25
 
 ---
 
-## 4. Data Format Specification
+# 4. Data Format Specification
 
-### 4.1 Encryption Scope
+## 4.1 Encryption Scope
 
 All business data is encrypted as a whole within the request body (Body). No field-level distinction is made — the entire payload is treated as a single unit for encryption.
 
 Protocol metadata (identity, replay-prevention parameters, signature, and encryption parameters) is carried in the request headers. The request body contains only the encrypted business ciphertext.
 
-### 4.2 Encrypted Request Format
+## 4.2 Encrypted Request Format
 
 **Request Headers**
 
@@ -86,7 +85,7 @@ Protocol metadata (identity, replay-prevention parameters, signature, and encryp
 
 > **Note**: The encryption algorithm is fixed as AES-256-GCM and the signature algorithm is fixed as SHA256withRSA. Neither needs to be included in each request.
 
-### 4.3 Signature Specification
+## 4.3 Signature Specification
 
 The signature covers all request header fields and the full request body to prevent tampering of any individual field:
 
@@ -97,7 +96,7 @@ X-Sign      = Base64( SHA256withRSA(sender's RSA private key, SignContent) )
 
 > **Note**: Fields are concatenated using `|` as a fixed delimiter to avoid ambiguity. The request body is hashed with SHA256 before inclusion in the signature to avoid performance overhead from large payloads, while still guaranteeing body integrity.
 
-### 4.4 Encrypted Response Format
+## 4.4 Encrypted Response Format
 
 **Response Headers**
 
@@ -120,7 +119,7 @@ X-Sign      = Base64( SHA256withRSA(sender's RSA private key, SignContent) )
 }
 ```
 
-### 4.5 Response Body Fields
+## 4.5 Response Body Fields
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -131,9 +130,9 @@ X-Sign      = Base64( SHA256withRSA(sender's RSA private key, SignContent) )
 
 ---
 
-## 5. Encryption / Decryption Flow
+# 5. Encryption / Decryption Flow
 
-### 5.1.1 Request Side Processing Flow
+## 5.1.1 Request Side Processing Flow
 
 ```
 1. Build the original business request payload
@@ -154,7 +153,7 @@ X-Sign      = Base64( SHA256withRSA(sender's RSA private key, SignContent) )
 7. Send request (headers carry metadata, body carries the "data" field)
 ```
 
-### 5.1.2 Response Side Processing Flow
+## 5.1.2 Response Side Processing Flow
 
 ```
 1. Receive the encrypted request
@@ -185,7 +184,7 @@ X-Sign      = Base64( SHA256withRSA(sender's RSA private key, SignContent) )
 
 ---
 
-## 6. Interface List
+# 6. Interface List
 
 All business interface definitions (paths, request parameters, response fields, and business rules) are maintained in the following online document:
 
@@ -193,7 +192,7 @@ All business interface definitions (paths, request parameters, response fields, 
 
 ---
 
-## 7. Error Codes
+# 7. Error Codes
 
 | Error Code | Description |
 |---|---|
@@ -204,7 +203,7 @@ All business interface definitions (paths, request parameters, response fields, 
 
 ---
 
-## 8. Onboarding Preparation
+# 8. Onboarding Preparation
 
 Before formal integration, both parties must exchange the following information via email:
 
