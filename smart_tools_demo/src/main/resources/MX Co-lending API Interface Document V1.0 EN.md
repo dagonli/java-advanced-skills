@@ -154,16 +154,18 @@ X-Sign      = Base64( SHA256withRSA(caller's RSA private key, SignContent) )
 
 | Field | Type | Required | Description |
 |---|---|---|---|
-| flag | String | Yes | Processing result indicator: `S` = Success, `F` = Failure |
-| code | String | Yes | Error code |
-| msg | String | No | Error message |
+| flag | String | Yes | Processing result indicator: `S` = Success, `F` = Failure (intercepted by gateway layer) |
+| code | String | No | Error code. Present only when `flag=F`, used to distinguish different failure reasons. See Section 7 for error codes |
+| msg | String | No | Result description message |
 | data | String | No | Encrypted business payload, Base64-encoded |
+
+> **Design Note**: The `flag`, `code`, and `msg` fields are transmitted in plaintext by design. When `flag=F`, the request was intercepted at the gateway layer (e.g., signature verification failure, decryption failure, invalid parameter, etc.) — in this case the business data cannot be encrypted, so the error information is returned in plaintext to allow the caller to quickly identify the issue. When `flag=S`, the business data is returned encrypted via the `data` field.
 
 ---
 
 # 5. Encryption / Decryption Flow
 
-## 5.1.1 Request Side Processing Flow
+## 5.1 Request Side Processing Flow
 
 ```
 1. Build the original business request payload
@@ -184,7 +186,7 @@ X-Sign      = Base64( SHA256withRSA(caller's RSA private key, SignContent) )
 7. Send request (headers carry metadata, body carries the "data" field)
 ```
 
-## 5.1.2 Response Side Processing Flow
+## 5.2 Response Side Processing Flow
 
 ```
 1. Receive the encrypted request
@@ -235,6 +237,11 @@ All business interface definitions (paths, request parameters, response fields, 
 | GWS_COMMON_S0002 | Invalid parameter |
 | GWS_COMMON_S0003 | Decryption failed |
 | GWS_COMMON_S0004 | Signature verification failed |
+| GWS_COMMON_S0005 | AppId invalid or unauthorized |
+| GWS_COMMON_S0006 | Timestamp exceeds valid window (±5 minutes) |
+| GWS_COMMON_S0007 | Duplicate request (duplicate X-Request-Id) |
+| GWS_COMMON_S0008 | IV invalid or malformed |
+| GWS_COMMON_S0009 | API rate limit exceeded, please try again later |
 
 ---
 
