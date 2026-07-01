@@ -69,7 +69,7 @@ Protocol metadata (identity, replay-prevention parameters, signature, and encryp
 | Header | Type | Required | Description |
 |---|---|---|---|
 | X-App-Id | String | Yes | Unique application identifier |
-| X-Timestamp | String | Yes | Unix timestamp in milliseconds, e.g. `1712534400000`. Used for replay attack prevention (time window validation) |
+| X-Timestamp | String | Yes | Unix timestamp in milliseconds, e.g. `1712534400000`. Used for replay attack prevention. The receiving party must reject any request whose `X-Timestamp` deviates from the receiver's local clock by more than **±5 minutes**. Both parties must keep their server clocks synchronized via NTP to ensure this window is enforced consistently |
 | X-Request-Id | String | Yes | Unique request identifier (UUID). Used for request tracing and replay prevention |
 | X-IV | String | Yes | Initialization vector, Base64-encoded, 12 bytes for GCM mode |
 | X-Encrypted-Key | String | Yes | AES session key encrypted with the peer's RSA public key, Base64-encoded |
@@ -101,6 +101,8 @@ Where:
 - `body` — the **raw HTTP message body bytes exactly as sent/received on the wire**. For a request it is the request body (`{"data":"..."}`); for a response it is the response body. No JSON re-serialization, reformatting, or whitespace normalization is performed by either side.
 - `SHA256(body)` — the SHA-256 digest of `body`, expressed as a **lowercase hex string** before concatenation.
 - Fields are concatenated using `|` as a fixed delimiter, in the **exact order shown above**. A field that is empty is kept as an empty string (producing two consecutive `|`); it is never omitted, so the field count is always fixed at 6.
+- **Character encoding**: `SignContent` must be encoded as **UTF-8** before being fed into `SHA256withRSA`. Both parties must use UTF-8 consistently regardless of implementation language, otherwise signatures computed on the same logical content will not match.
+- **Base64 variant**: all Base64 values in this specification (`X-IV`, `X-Encrypted-Key`, `X-Sign`, and the `data` field) use **standard Base64 encoding** (RFC 4648 §4, with `+` / `/` and `=` padding) — **not** the URL-safe variant.
 
 **Request signature** (sent by the caller): signed with the caller's RSA private key; the server verifies it using the caller's RSA public key. Here `body` = request body.
 
