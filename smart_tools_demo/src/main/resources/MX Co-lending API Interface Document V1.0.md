@@ -12,9 +12,56 @@
 
 ---
 
-# 2. 安全机制
+# 2. SDK 快速开始
 
-## 2.1 双重保护
+> 以下示例基于 Java SDK（`qfin-sdk-java`），封装了本文档定义的加密、签名流程，调用方无需关心底层密码学细节。
+
+## 2.1 添加依赖
+
+```xml
+<dependency>
+    <groupId>com.qfin.overseas.finance.gws</groupId>
+    <artifactId>qfin-sdk-java</artifactId>
+    <version>1.5.0</version>
+</dependency>
+```
+
+## 2.2 发送加密请求
+
+```java
+// 1. 生成 RSA-2048 密钥对
+CredentialConfig.KeyPair keyPair = QfinClient.generateKeyPair();
+// 公钥发给 QFIN 注册，私钥自己保密
+
+// 2. 收到 QFIN 公钥和 AppId 后，构造凭证配置
+CredentialConfig config = new CredentialConfig(
+    "your-app-id",                              // QFIN 分配的 AppId
+    new CredentialConfig.KeyPair(
+        yourPublicKey,                          // 自己的 RSA 公钥
+        yourPrivateKey                          // 自己的 RSA 私钥
+    ),
+    new CredentialConfig.PeerKey(
+        qfinPublicKey                           // QFIN 的 RSA 公钥
+    )
+);
+
+// 3. 发送请求
+QfinClient client = new QfinClient(config);     // 建议单例
+
+String response = client.send(
+    "https://api.qfin.com/co-lending/v1/xxx",   // 接口地址
+    "{\"orderId\":\"ORD-001\"}"                  // 业务 JSON
+);
+// response 为解密后的业务响应明文
+```
+
+> SDK 内部自动完成：生成 AES 密钥 → 加密 body → 加密 AES 密钥 → 签名 → 发送 → 验签 → 解密响应。
+
+---
+
+# 3. 安全机制
+
+## 3.1 双重保护
 
 为确保数据安全，采用**加密 + 数字签名**双重保护方案：
 
@@ -23,7 +70,7 @@
 | **加密** | 保护数据机密性，防止数据泄露 |
 | **数字签名** | 确保数据完整性，防止篡改，并验证消息来源 |
 
-## 2.2 分层安全架构
+## 3.2 分层安全架构
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
@@ -37,9 +84,9 @@
 
 ---
 
-# 3. 密码学算法规范
+# 4. 密码学算法规范
 
-## 3.1 算法套件
+## 4.1 算法套件
 
 采用以下算法组合：**RSA-2048 + AES-256-GCM + SHA256withRSA**
 
@@ -51,15 +98,15 @@
 
 ---
 
-# 4. 数据格式规范
+# 5. 数据格式规范
 
-## 4.1 加密范围
+## 5.1 加密范围
 
 所有业务数据在请求体（Body）中作为整体进行加密。不做字段级区分 —— 整个报文作为一个整体进行加密处理。
 
 协议元数据（身份标识、防重放参数、签名和加密参数）通过请求头传递。请求体仅包含加密后的业务密文。
 
-## 4.2 加密请求格式
+## 5.2 加密请求格式
 
 **请求头**
 
@@ -82,7 +129,7 @@
 
 > **说明**：`data` 值为 `Base64( ciphertext || authTag )`，其中 `authTag` 是 16 字节（128 位）的 GCM 认证标签，追加在密文之后。IV 通过 `X-IV` 单独传递（12 字节，Base64 编码）。加密算法固定为 AES-256-GCM，签名算法固定为 SHA256withRSA，每次请求无需重复传递。
 
-## 4.3 签名规范
+## 5.3 签名规范
 
 签名覆盖所有请求头字段和完整请求体，防止任意单个字段被篡改。**请求和响应使用相同的签名公式** —— 区别仅在于由谁签名以及对哪个 body 取哈希。这样可以避免请求侧和响应侧签名时的歧义。
 
@@ -123,18 +170,18 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 
 > **说明**：请求体在纳入签名前先经过 SHA-256 哈希，以避免直接对大报文签名带来的性能开销，同时仍然保证请求体的完整性。
 
-## 4.4 加密响应格式
+## 5.4 加密响应格式
 
 **响应头**
 
 | Header | 类型 | 必填 | 说明 |
 |---|---|---|---|
-| X-App-Id | String | 是 | 回传请求的 `X-App-Id`。包含此字段使得统一签名公式（§4.3）对响应的适用方式与请求完全一致 |
+| X-App-Id | String | 是 | 回传请求的 `X-App-Id`。包含此字段使得统一签名公式（§5.3）对响应的适用方式与请求完全一致 |
 | X-Timestamp | String | 是 | Unix 毫秒时间戳 |
 | X-Request-Id | String | 是 | 回传请求的 `X-Request-Id`，用于关联请求与响应 |
 | X-IV | String | 是 | 初始向量，Base64 编码 |
 | X-Encrypted-Key | String | 是 | 使用对方 RSA 公钥加密后的 AES 会话密钥，Base64 编码 |
-| X-Sign | String | 是 | 数字签名值，Base64 编码，按 §4.3 对响应计算 |
+| X-Sign | String | 是 | 数字签名值，Base64 编码，按 §5.3 对响应计算 |
 
 **响应体**（`Content-Type: application/json`）
 
@@ -147,22 +194,22 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 }
 ```
 
-## 4.5 响应体字段说明
+## 5.5 响应体字段说明
 
 | 字段 | 类型 | 必填 | 说明 |
 |---|---|---|---|
 | flag | String | 是 | 处理结果标识：`S` = 请求成功，`F` = 请求失败（被网关层拦截）|
-| code | String | 否 | 错误码。仅 `flag=F` 时有值，用于区分不同的失败原因，错误码详见第 7 节 |
-| msg | String | 否 | 结果描述信息 |
+| code | String | 否 | 错误码。仅 `flag=F` 时有值，用于区分不同的失败原因，错误码详见第 8 节 |
+| msg | String | 否 | 错误码描述 |
 | data | String | 否 | 加密后的业务数据，Base64 编码 |
 
 > **设计说明**：`flag`、`code`、`msg` 三个字段为明文传输，这是有意设计。当 `flag=F` 时，表示请求在网关层即被拦截（如签名验证失败、解密失败、参数无效等），此时无需也无法对业务数据进行加密，直接以明文返回错误信息便于调用方快速定位问题。当 `flag=S` 时，业务数据通过 `data` 字段加密返回。
 
 ---
 
-# 5. 加解密流程
+# 6. 加解密流程
 
-## 5.1 请求方处理流程
+## 6.1 请求方处理流程
 
 ```
 1. 构建原始业务请求数据
@@ -183,14 +230,14 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 7. 发送请求（Header 携带元数据，Body 携带 "data" 字段）
 ```
 
-## 5.2 响应方处理流程
+## 6.2 响应方处理流程
 
 ```
 1. 接收加密请求
         ↓
 2. 从请求头提取 X-Timestamp、X-Request-Id、X-IV、X-Encrypted-Key、X-Sign
         ↓
-3. 使用对方 RSA 公钥验证请求签名，遵循 §4.3 的统一公式：
+3. 使用对方 RSA 公钥验证请求签名，遵循 §5.3 的统一公式：
    验证 X-Sign 覆盖  X-App-Id|X-Timestamp|X-Request-Id|X-IV|X-Encrypted-Key|SHA256(requestBody)
    其中 requestBody 为网络上接收到的原始请求体字节。
         ↓
@@ -207,7 +254,7 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 9. 使用对方 RSA 公钥加密新的 AES 会话密钥 → encryptedKey
         ↓
 10. 构造响应头：X-App-Id（回传请求值）、X-Timestamp、
-    X-Request-Id（回传请求值）、X-IV、X-Encrypted-Key；使用 §4.3 的统一公式
+    X-Request-Id（回传请求值）、X-IV、X-Encrypted-Key；使用 §5.3 的统一公式
     计算响应签名（body = 响应体，使用本端/服务端 RSA 私钥签名）并写入 X-Sign
         ↓
 11. 返回加密响应（Header 携带元数据，Body 携带密文）
@@ -215,7 +262,7 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 
 ---
 
-# 6. 接口列表
+# 7. 接口列表
 
 所有业务接口定义（路径、请求参数、响应字段和业务规则）维护在以下在线文档中：
 
@@ -223,23 +270,21 @@ X-Sign   = Base64( SHA256withRSA(调用方 RSA 私钥, 签名原文) )
 
 ---
 
-# 7. 错误码
+# 8. 错误码
 
-| 错误码 | 说明 |
-|---|---|
-| GWS_COMMON_S0001 | 系统错误，请稍后重试 |
-| GWS_COMMON_S0002 | 参数无效 |
-| GWS_COMMON_S0003 | 解密失败 |
-| GWS_COMMON_S0004 | 签名验证失败 |
-| GWS_COMMON_S0005 | AppId 无效或未授权 |
-| GWS_COMMON_S0006 | 时间戳超出有效窗口（±5 分钟） |
-| GWS_COMMON_S0007 | 请求重复（X-Request-Id 重复） |
-| GWS_COMMON_S0008 | IV 无效或格式错误 |
-| GWS_COMMON_S0009 | 接口限流，请稍后重试 |
+| 错误码              | 说明                   |
+|------------------|----------------------|
+| GWS_COMMON_S0001 | 系统错误，请稍后重试           |
+| GWS_COMMON_S0002 | 参数无效                 |
+| GWS_COMMON_S0003 | 请求路径无效               |
+| GWS_COMMON_S0004 | 验签或解密失败              |
+| GWS_COMMON_S0005 | AppId 无效或未授权         |
+| GWS_COMMON_S0006 | 请求重复 |
+| GWS_COMMON_S0007 | 接口限流，请稍后重试           |
 
 ---
 
-# 8. 接入准备
+# 9. 接入准备
 
 正式对接前，双方必须通过邮件交换以下信息：
 
